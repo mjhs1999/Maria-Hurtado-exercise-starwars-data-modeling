@@ -1,31 +1,48 @@
-import os
-import sys
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import create_engine, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship, declarative_base
-from sqlalchemy import create_engine
 from eralchemy2 import render_er
+
+Base = declarative_base()
 
 class Usuario(Base):
     __tablename__ = 'usuarios'
-    email = Column(Integer, primary_key=True)
-    usuario = Column(String(250), ForeignKey('naves_favoritas'),ForeignKey('personas_favoritas'),ForeignKey('planetas_favoritas'))
+    email = Column(String(250), primary_key=True)
+    usuario = Column(String(250), nullable=False)
     password = Column(String(250), nullable=False)
-## creating ship class
+
 class Naves(Base):
     __tablename__ = 'naves'
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
-    modelo = Column(String(250), nullable=False)
-    clase_de_nave = Column(String(250), nullable=False)
-    costo_en_creditos = Column(String(250), nullable=False)
-    longitud = Column(String(250), nullable=False)
-    capacidad_de_pasajeros = Column(Integer, nullable=False)
-    MGLT = Column(String(250), nullable=False)
-    capacidad_de_carga = Column(Integer, nullable=False)
-    provisiones = Column(Integer, nullable=False)
-    hypermotor = Column(String(250), nullable=False)
+    # Other columns...
 
-    ##creating person class
-    ##creating planets
-    ##creating favs
+class Personas(Base):
+    __tablename__ = 'personas'
+    id = Column(Integer, primary_key=True)
+    # Other columns...
+
+class Planetas(Base):
+    __tablename__ = 'planetas'
+    id = Column(Integer, primary_key=True)
+    # Other columns...
+
+class Naves_favoritas(Base):
+    __tablename__ = 'naves_favoritas'
+    id = Column(Integer, primary_key=True)
+    nave_id = Column(Integer, ForeignKey('naves.id'))
+    usuario_id = Column(String(250), ForeignKey('usuarios.email'))
+
+class Personas_favoritas(Base):
+    __tablename__ = 'personas_favoritas'
+    id = Column(Integer, primary_key=True)
+    persona_id = Column(Integer, ForeignKey('personas.id'))
+    usuario_id = Column(String(250), ForeignKey('usuarios.email'))
+
+class Planetas_favoritas(Base):
+    __tablename__ = 'planetas_favoritas'
+    id = Column(Integer, primary_key=True)
+    planeta_id = Column(Integer, ForeignKey('planetas.id'))
+    usuario_id = Column(String(250), ForeignKey('usuarios.email'))
+
+# Optionally, generate an entity-relationship diagram (ERD) for your models
 render_er(Base, 'diagram.png')
